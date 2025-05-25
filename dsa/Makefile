@@ -17,8 +17,6 @@ HDRS := $(wildcard *.h)
 HDRS += $(wildcard */*.h)
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
-
-
 .PHONY: all clean help run
 
 all: $(EXECUTABLE)

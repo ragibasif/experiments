@@ -23,15 +23,15 @@ extern "C" {
 #define F_MEMORY_DEBUG /* turns on the memory debugging system */
 #define F_MEMORY_PRINT /* turns on the memory printing system */
 #define F_EXIT_CRASH   /* turns on the crash on exit */
-#include "./debug/forge.h"
+#include "./forge/forge.h"
 ////////////////////////////////////////////////////////////////////////////////
 
-// ./sll/sll.c
+// sll
 typedef struct sll sll_t;
 extern sll_t *sll_node_create(const int data);
 extern void sll_node_destroy(sll_t *head);
 
-// ./dll/dll.c
+// dll
 typedef struct dll dll_t;
 extern dll_t *dll_node_create(const int data);
 extern void dll_node_destroy(dll_t *head);
