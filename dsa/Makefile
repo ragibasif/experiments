@@ -3,18 +3,23 @@ RED=\033[0;91m
 MAGENTA=\033[0;95m
 RESET=\033[0m
 
+CC := clang
+CFLAGS := -std=c99  -Wall -Wextra -Weverything -O1 -g -pedantic -v -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls
+DBG = lldb
 
-CC := gcc
-CFLAGS := -std=c99 -Wall -Wextra -O0 -g3 -pedantic -DDEBUG
-
-LDFLAGS := -lc
+LDFLAGS := -v -lc
 
 EXECUTABLE := exe
 
+
 SRCS := $(wildcard *.c)
 SRCS += $(wildcard */*.c)
+SRCS += $(wildcard */*/*.c)
+
 HDRS := $(wildcard *.h)
 HDRS += $(wildcard */*.h)
+HDRS += $(wildcard */*/*.h)
+
 OBJS := $(patsubst %.c, %.o, $(SRCS))
 
 .PHONY: all clean help run

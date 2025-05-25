@@ -23,7 +23,7 @@ extern "C" {
 #define F_MEMORY_DEBUG /* turns on the memory debugging system */
 #define F_MEMORY_PRINT /* turns on the memory printing system */
 #define F_EXIT_CRASH   /* turns on the crash on exit */
-#include "./forge/forge.h"
+#include "forge/forge.h"
 ////////////////////////////////////////////////////////////////////////////////
 
 // sll
