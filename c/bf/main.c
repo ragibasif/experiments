@@ -55,22 +55,7 @@
 
 #define MAX_BUFFER 1024
 
-enum token_type {
-    POINTER_SHIFT, // >, <
-    BYTE_SHIFT,    // +, -
-    BYTE_IO,       // .,,
-    POINTER_JUMP,  // [,]
-    INVALID_TYPE,
-};
-
-struct instruction {
-    enum token_type instr_type;
-    char instr_chr;
-};
-
 int buffer[MAX_BUFFER];
-
-struct instruction instr_buffer[MAX_BUFFER];
 
 void reset_buffer(void) { memset(buffer, 0, MAX_BUFFER); }
 
@@ -82,47 +67,51 @@ void print_buffer(void) {
     putchar('\n');
 }
 
-void lexer(char *src) {
-    size_t length;
+void run_instr(char *str, size_t length) {
+    size_t pointer;
     size_t i;
-    char c;
-    struct instruction token;
-    length = strlen(src);
-    printf("string: %s\nlength: %zu\n", src, length);
-    for (i = 0; i < length; i++) {
-        printf("%c\n", src[i]);
-        c = src[i];
-        if (c == LESS_THAN || c == GREATER_THAN) {
-            token.instr_chr = c;
-            token.instr_type = POINTER_SHIFT;
-        } else if (c == PLUS || c == MINUS) {
-            token.instr_chr = c;
-            token.instr_type = BYTE_SHIFT;
-        } else if (c == DOT || c == COMMA) {
-            token.instr_chr = c;
-            token.instr_type = BYTE_IO;
-        } else if (c == OPEN_BRACKET || c == CLOSE_BRACKET) {
-            token.instr_chr = c;
-            token.instr_type = POINTER_JUMP;
+    for (i = pointer = 0; i < length; i++) {
+        if (str[i] == GREATER_THAN) {
+            pointer++;
+        } else if (str[i] == LESS_THAN) {
+            pointer--;
+        } else if (str[i] == PLUS) {
+            buffer[pointer]++;
+        } else if (str[i] == MINUS) {
+            buffer[pointer]--;
+        } else if (str[i] == DOT) {
+            printf("%c\n", buffer[pointer]);
+        } else if (str[i] == COMMA) {
+            buffer[pointer] = str[++i];
+        } else if (str[i] == OPEN_BRACKET) {
+            if (buffer[pointer] == 0) {
+                while (str[i] != CLOSE_BRACKET) {
+                    i++;
+                }
+            }
+        } else if (str[i] == CLOSE_BRACKET) {
+            if (buffer[pointer] != 0) {
+                while (str[i] != OPEN_BRACKET) {
+                    i--;
+                }
+            }
         } else {
-            token.instr_chr = c;
-            token.instr_type = INVALID_TYPE;
+            continue;
         }
-        instr_buffer[i] = token;
     }
-    // for (i = 0; i < length; i++) {
-    //     printf("%d\n", instr_buffer[i].instr_type);
-    //     printf("%c\n", instr_buffer[i].instr_chr);
-    // }
 }
-
-void run_instr(void) {}
-
-// TODO: Parser
 
 void test_add_two_values(void) {
     char *str = "[->+<]";
-    lexer(str);
+    size_t length = strlen(str);
+    run_instr(str, length);
+}
+
+void test_hello_world(void) {
+    char *str = "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++"
+                "++..+++.>>.<-.<.+++.------.--------.>>+.>++.";
+    size_t length = strlen(str);
+    run_instr(str, length);
 }
 
 int main(int argc, char **argv) {
@@ -130,13 +119,17 @@ int main(int argc, char **argv) {
     (void)argv;
 
     reset_buffer();
-    print_buffer();
+    // print_buffer();
     test_add_two_values();
+    print_buffer();
+    reset_buffer();
+    test_hello_world();
+    print_buffer();
 
-    printf("%u\n", MAX_BUFFER);
-    printf("%zu\n", MAX_BUFFER * sizeof(*buffer));
+    // printf("%u\n", MAX_BUFFER);
+    // printf("%zu\n", MAX_BUFFER * sizeof(*buffer));
 
-    puts("HELLO");
+    // puts("HELLO");
 
     /******************************************************************************/
     /*                      MEMORY DEBUGGING - DO NOT TOUCH */
